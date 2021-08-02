@@ -16,6 +16,8 @@ Submission to Twitter's algorithmic bias bounty challenge
 Final score: (TBD)
 
 + Dataset source: Images from [117th US Congress](https://www.congress.gov/members?q=%7B%22congress%22%3A%5B%22117%22%5D%7D&pageSize=250&page=1)
++ https://github.com/CivilServiceUSA/us-house
++ https://github.com/CivilServiceUSA/us-senate
 
 Useful links about the submission:
 + [Challenge blog post](https://blog.twitter.com/engineering/en_us/topics/insights/2021/algorithmic-bias-bounty-challenge)
