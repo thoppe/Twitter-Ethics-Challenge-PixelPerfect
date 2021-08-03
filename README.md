@@ -15,9 +15,9 @@ To ensure a dataset that is 1] representative of gender and ethnicity, 2] public
 
 Each congressional representative and senator was put in competition was each other. Similar to the [Twitter paper](https://arxiv.org/abs/2105.08667), we placed a black buffer between the images and asked the cropping algorithm for the most salient point using the aspect ratio of the original images (1:1).
 
-The cropping algorithm computes a set of saliancy points across 140  evenly spaced points along the composite image (1536x512). In this case it works out to about 40 pixels per point. We evaluate the "winner" for the original composite image, then examine if the winner changes when we add a buffer of fixed size to the left of the image. We used buffers of size `[0, 6, 13, 19, 26, 31]`. A pair of images is considered "exploitable" if there exists a buffer of some size where we can change which image is cropped.
+The cropping algorithm computes a set of saliancy points across 140  evenly spaced points along the composite image (1536x512). In this case it works out to about 40 pixels per point. We evaluate the "winner" for the original composite image, then examine if the winner changes when we add a buffer of fixed size to the left of the image. We used buffers of size `[0, 6, 13, 19, 26, 31]`. A pair of images is considered "exploitable" if there exists a buffer of some size where we can change which image is cropped.
 
-Annidcotorally, we found a much larger effect when we applied the attack to buffers of _all_ sizes, but computational constraints prevented this full analysis. We also could increase the attack surface by inserting the buffer between the images but this modified one image independently of the other.  Since the buffer shifted both images by the same amount, it is considered "fair" for attacks of all images in the wild.
+Annidcotorally, we found a much larger effect when we applied the attack to buffers of _all_ sizes, but computational constraints prevented this full analysis. We also could increase the attack surface by inserting the buffer between the images but this modified one image independently of the other.  Since the buffer shifted both images by the same amount, it is considered "fair" for attacks of all images in the wild.
 
 For demographics, we split the population into the two categories of gender provided (all members identified as either male or female), and two categories of ethnicity, white and other. "Other", or not-white, was chosen as a category for statistical power, as the various subgroups (african american, hispanics, pacific islanders, ...), were not large enough to draw meaningful conclusions. Future work should examine this bias using more nuanced subgroups with larger datasets.
 
@@ -48,29 +48,29 @@ Final score: (TBD)
 We first report results reflected in Yee et. all: gender plays a strong role (towards females), while the role of ethnicity matters, but in a more subtle way. p-values are constructed from a two-sided binomial test using the sample mean as the expected value, significance (when shown), is set at p<0.01 and provided for visual convenience.
 
 ```
-            key        n       k       pct         pvalue
-3    white_male  1746180  756856  0.433435   0.000000e+00
-1    other_male   357780  187102  0.522953  5.096083e-166
-2  white_female   501960  318871  0.635252   0.000000e+00
-0  other_female   250980  165621  0.659897   0.000000e+00
+            key        n       k       pct         pvalue
+3    white_male  1746180  756856  0.433435   0.000000e+00
+1    other_male   357780  187102  0.522953  5.096083e-166
+2  white_female   501960  318871  0.635252   0.000000e+00
+0  other_female   250980  165621  0.659897   0.000000e+00
 ```
 
 Reflecting the gender and ethnicity parity in the party structure we see the same result:
 
 ```
-           key        n       k       pct  pvalue
-1  independent    10680    3260  0.305243     0.0
-2   republican  1393740  636249  0.456505     0.0
-0     democrat  1452480  788941  0.543168     0.0
+           key        n       k       pct  pvalue
+1  independent    10680    3260  0.305243     0.0
+2   republican  1393740  636249  0.456505     0.0
+0     democrat  1452480  788941  0.543168     0.0
 ```
 
 Considering the interaction between gender and ethnicity, the largest difference is between white males and females. For non-white males the bias still exists, but is less. n reflects not only each pairwise comparisons but at all levels of offset.
 
 ```
-        left_key     right_key       n       k       pct         pvalue    sig
-12    white_male  other_female   76845   21488  0.279628   0.000000e+00   True
-14    white_male  white_female  153690   47347  0.308068   0.000000e+00   True
-4     other_male  other_female   15745    5895  0.374405  1.459034e-243   True
+        left_key     right_key       n       k       pct         pvalue    sig
+12    white_male  other_female   76845   21488  0.279628   0.000000e+00   True
+14    white_male  white_female  153690   47347  0.308068   0.000000e+00   True
+4     other_male  other_female   15745    5895  0.374405  1.459034e-243   True
 6     other_male  white_female   31490   12577  0.399397  1.563426e-318   True
 13    white_male    other_male  109545   45455  0.414944   0.000000e+00   True
 8   white_female  other_female   22090   10886  0.492802   4.166236e-05   True
@@ -118,8 +118,8 @@ Finally, we show the main results using both subgroups of ethnicity and gender.
 8   white_female  other_female    4418    840  0.190131  3.868877e-13   True
 ```
 
-Useful links for the submission:
 
+Useful links for the submission:
 + [Challenge blog post](https://blog.twitter.com/engineering/en_us/topics/insights/2021/algorithmic-bias-bounty-challenge)
 + [Hacker One entry point](https://hackerone.com/twitter-algorithmic-bias?type=team)
 + [Crop code on github](https://github.com/twitter-research/image-crop-analysis)
