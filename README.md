@@ -19,8 +19,6 @@ The following images are almost identical, with one small exception. The second 
 
 To replicate this, you can use the code provided or the [jupyter notebook](https://github.com/twitter-research/image-crop-analysis/blob/main/notebooks/Image%20Annotation%20Dash.ipynb).
 
-16.4
-
 ## Methods
 
 To ensure a dataset that is 1] representative of gender and ethnicity, 2] publicly available, 3] uniform in framing and pose, and 4] consensual, we use images from the 117th US Congress. Images and demographic data provided by Civil Service USA and can be found at the following locations:
@@ -33,7 +31,7 @@ Each congressional representative and senator was put in competition with each o
 
 The cropping algorithm computes a set of saliency points across 140 evenly spaced points along the composite image (1536x512). In this case it works out to about 40 pixels per point. We evaluate the "winner" for the original composite image, then examine if the winner changes when we add a buffer of fixed size to the left of the image. We used buffers of size `[0, 6, 13, 19, 26, 31]`. A pair of images is considered "exploitable" if there exists a buffer of some size where we can change which image is cropped.
 
-Annidcotorally, we found a much larger effect when we applied the attack to buffers of _all_ sizes, but computational constraints prevented this full analysis. We also could increase the attack surface by inserting the buffer between the images but this modified one image independently of the other.  Since the buffer shifted both images by the same amount, it is considered "fair" for attacks of all images in the wild.
+Anecdotally, we found a much larger effect when we applied the attack to buffers of _all_ sizes, but computational constraints prevented this full analysis. We also could increase the attack surface by inserting the buffer between the images (but this modified one image independently of the other).  Since the buffer shifted both images by the same amount, it is considered "fair" for attacks of all images in the wild.
 
 For demographics, we split the population into the two categories of gender provided (all members identified as either male or female), and two categories of ethnicity: white and other. "Other", or not-white, was chosen as a category for statistical power as the various subgroups (African American, Hispanics, pacific islanders, ...), were not large enough to draw meaningful conclusions. Future work should examine this bias using more nuanced subgroups with larger datasets.
 
@@ -45,29 +43,31 @@ Full tables of statistics are provided at the end of the README. Self-pairs were
 
 ## Self-score
 
-+ **Type of Harm** (20)
++ **Type of Harm** (20 base points)
 
-Unintentional underrepresentation (20 base points).
+Unintentional underrepresentation.
 
-+ **Damage or impact** (1.4, 1.2 = 1.3)
++ **Damage or impact** ((1.4 + 1.2)/2 = 1.3)
 
-We show that along multiple axis of identity (gender and ethnicity) this effect of this exploit and is magnified for women of color (x1.4). Being cropped out of an image, or having high varability of being cropped out of an image (inconsitant user experience and subtle UI gaslighting) ca have a moderate impact to a person's well-being (x1.2)
+We show that along multiple axis of identity (gender and ethnicity) this exploit and not that it is magnified for women of color (x1.4). Being cropped out of an image, or having high variability of being cropped out of an image (UI gaslighting) can have a moderate impact to a person's well-being (x1.2)
 
 + **Affected users** (1.2)
 
-We estimate that the number of users that have been seen or exposed to images of multiple people, where one of them is a woman of color is at least one million (x1.2). With 187 million active user each posting or reposting a single target image once a year with 10 views, this is still gives 5 million affected users per day. 
+We estimate that the number of users that have been seen or exposed to images of multiple people, where one of them is a woman of color is at least one million (x1.2). With 187 million active user each posting or reposting a single target image once a year with 10 views, this is still gives 5 million views per user per day.
 
 + **Likelihood only graded for unintentional harms** (1.3)
-+ **Exploitability only graded for intentional harms:**
++ **Exploitability only graded for intentional harms:** (not scored)
 
-While this is not an intentional harm, it can be! Code provided can easily duplicate this effect (x1.3 if intentional). The author notes that this algorithm isn't exactly the same as the one live on Twitter now (8/2/21) as it currently chooses to do nothing, and instead pick the black square in the middle ([Roll Safe meme](https://knowyourmeme.com/memes/roll-safe): can't have bias if we remove the humans).
+While this is not an intentional harm, it can be! Code provided can easily duplicate this effect (x1.3 if scored). The author notes that this algorithm isn't exactly the same as the one live on Twitter now (8/2/21) as it currently chooses to do nothing, and instead pick the black square in the middle ([Roll Safe meme](https://knowyourmeme.com/memes/roll-safe): can't have bias if we remove the humans).
 
-We note that it is hard to tell harm has occurred in-the-wild, as the effects are often unnoticed by the completely arbitrary number of evaluation points the cropping algorithm used. That said, we show that it works on real world images as well in the example below. Considering that images with multiple people are shown on Twitter daily, this exploit is very likely (1.3)
+We note that it is difficult to tell harm has occurred in-the-wild, as the effect may be unnoticed as the user isn't presented with the alternative. That said, we show that it works on real world images as well in the examples below. Considering that images with multiple people are shown on Twitter daily, this exploit is very likely (1.3).
+
+Here the most salient point is marked by a green dot. The images are only offset by a single width pixel. 
 
 ![](docs/kids_23.jpg)
 ![](docs/kids_24.jpg)
 
-Here the most salient point is marked by a green dot. The images are only offset by a single width pixel. Here, in the span of three pixels, there are three different cropping points:
+This this example, over the span of three pixels there are three different cropping points:
 
 ![](docs/people_11.jpg)
 ![](docs/people_12.jpg)
@@ -75,13 +75,13 @@ Here the most salient point is marked by a green dot. The images are only offset
 
 + **Justification:** (1.0)
 
-We hope that the reader can see that the current algorithm is brittle and easily exploited. This effect happens naturally with different images and is dependent on unimportant information at the edge of the image. The harm here is subtle, but it is important to note that it isn't uniform across all demographics. If some users are arbitrarily and inconsistently cropped, this creates an experience that their presence in a photo is also arbitrary. We score this section at (x1.00) as the methodology is sound but could use a larger dataset and the effect isn't as harmful as a racially biased crop that was shown in the first paper. That said, we note that the original publication had no time constraints, but this challenge was announced and closed in less than two weeks. 
+We hope that the reader can see that the current cropping algorithm is brittle and easily exploited. This effect happens naturally with different images and is dependent on unimportant information at the edge of the image. The harm here is subtle, but it is important to note that it isn't uniform across all demographics. If some users are arbitrarily and inconsistently cropped, this creates an experience that their presence (and self!) in a photo is also arbitrary. We score this section at (x1.00) as the methodology is sound but could use a larger dataset and the effect isn't as harmful as a racially biased crop that was shown in the first paper. 
 
 + **Clarity of contribution:** (1.5)
 
-This submission is fully documented with workable examples, a reproducible dataset, and evidence of harm both intentional and unintentionally (x1.5). We note that the exploit can be fixed in numerous way at the cost of more computational resources. Instead of a single point, multiple points can be evaluated heuristically (as the original authors suggest). Or kernel densities can be estimated to provide a smoother representation of the most salient _area_.
+This submission is fully documented with workable examples, a reproducible dataset, and evidence of harm both intentional and unintentionally (x1.5). We note that the exploit can be fixed in numerous way at the cost of more computational resources. Instead of a single point, multiple points can be evaluated heuristically (as the original authors suggest). Also, kernel densities can be estimated to provide a smoother representation of the most salient _area_ vs a single point.
 
-Final Score:
++ **Final Score:** (60.84)
 
 `20 x (1.3 + 1.2 + 1.3 + 1.0 + 1.5) = 60.84`
 
@@ -141,7 +141,8 @@ Next we consider the effects of apply the exploit. The raw breakdown along demog
 
 Finally, we show the main results using both subgroups of ethnicity and gender.
 
-``        left_key     right_key       n      k       pct        pvalue    sig
+```
+        left_key     right_key       n      k       pct        pvalue    sig
 0   white_female    white_male   30738   4503  0.146496  1.549290e-17   True
 1     white_male  white_female   30738   4608  0.149912  6.904292e-12   True
 2     other_male    other_male    4422    677  0.153098  4.668935e-02  False
@@ -159,7 +160,6 @@ Finally, we show the main results using both subgroups of ethnicity and gender.
 14  white_female  other_female    4418    902  0.204165  3.565989e-12   True
 15  other_female  other_female    2162    442  0.204440  9.085229e-07   True
 ```
-
 
 Useful links for the submission:
 + [Challenge blog post](https://blog.twitter.com/engineering/en_us/topics/insights/2021/algorithmic-bias-bounty-challenge)
