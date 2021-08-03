@@ -1,11 +1,36 @@
 # Twitter Ethics Challenge: Pixel Perfect
-Submission to Twitter's algorithmic bias bounty challenge
+Submission to Twitter's algorithmic bias bounty challenge, by Travis Hoppe ([@metasemantic](https://twitter.com/metasemantic?lang=en)).
 
 ## Abstract
+
+We build off the work presented by [Yee et al.](https://arxiv.org/abs/2105.08667) and show that a trivial image modification can dramatically change the saliency ranking of two images. This modification can result in different crops for the same images. Specifically, we find that adding padding to the left of an image can alter the selection of which image to crop. At least 15% of all image pairs are exploitable in this way, possibly much larger.
+
+## Methods
+
+To ensure a dataset that is 1] representative of gender and ethnicity, 2] publicly available, 3] uniform in framing and pose, and 4] consensual, we use images from the 117th US Congress. Images and demographic data provided by Civil Service USA and can be found at the following locations:
+
++ https://github.com/CivilServiceUSA/us-house
++ https://github.com/CivilServiceUSA/us-senate
++ Additional information for the [117th US Congress](https://www.congress.gov/members?q=%7B%22congress%22%3A%5B%22117%22%5D%7D&pageSize=250&page=1)
+
+Each congressional representative and senator was put in competition was each other. Similar to the [Twitter paper](https://arxiv.org/abs/2105.08667), we placed a black buffer between the images and asked the cropping algorithm for the most salient point using the aspect ratio of the original images (1:1).
+
+The cropping algorithm computes a set of saliancy points across 140  evenly spaced points along the composite image (1536x512). In this case it works out to about 40 pixels per point. We evaluate the "winner" for the original composite image, then examine if the winner changes when we add a buffer of fixed size to the left of the image. We used buffers of size `[0, 6, 13, 19, 26, 31]`. A pair of images is considered "exploitable" if there exists a buffer of some size where we can change which image is cropped.
+
+Annidcotorally, we found a much larger effect when we applied the attack to buffers of _all_ sizes, but computational constraints prevented this full analysis. We also could increase the attack surface by inserting the buffer between the images but this modified one image independently of the other.  Since the buffer shifted both images by the same amount, it is considered "fair" for attacks of all images in the wild.
+
+For demographics, we split the population into the two categories of gender provided (all members identified as either male or female), and two categories of ethnicity, white and other. "Other", or not-white, was chosen as a category for statistical power, as the various subgroups (african american, hispanics, pacific islanders, ...), were not large enough to draw meaningful conclusions. Future work should examine this bias using more nuanced subgroups with larger datasets.
+
+## Results
+
+We found that out of the (536^2) image pairs considered, **15% of them were exploitable by our method**. Furthermore, we found that the attack was **dispropottionally more likely to occuor when comparing non-white women to white women**. We found **an increase of about 25%** (19% up from 15%) when considering this subgroup (p<<0.001).
+
+Full tables of statistics are provided at the end of the README. Self-pairs were not considered, so the actual number of considerations was 536^2 - 536. Additionally, we find slight differences considering image A-B vs B-A, so we considered them as separate cases and found that they were nearly identical.
 
 ## Self-score
 
 + **Type of Harm**
+
 + **Damage or impact**
 + **Affected users**
 + **Likelihood only graded for unintentional harms**
@@ -15,26 +40,12 @@ Submission to Twitter's algorithmic bias bounty challenge
 
 Final score: (TBD)
 
-Images and demographic data provided by Civil Service USA and can be found at the following locations:
-
-+ https://github.com/CivilServiceUSA/us-house
-+ https://github.com/CivilServiceUSA/us-senate
-+ Additional information for the [117th US Congress](https://www.congress.gov/members?q=%7B%22congress%22%3A%5B%22117%22%5D%7D&pageSize=250&page=1)
 
 
-Useful links about the submission:
-+ [Challenge blog post](https://blog.twitter.com/engineering/en_us/topics/insights/2021/algorithmic-bias-bounty-challenge)
-+ [Hacker One entry point](https://hackerone.com/twitter-algorithmic-bias?type=team)
-+ [Crop code on github](https://github.com/twitter-research/image-crop-analysis)
-+ [arXiv paper](https://arxiv.org/pdf/2105.08667.pdf)
+## Appendix and data tables
 
-## Lessons
 
-+ Model is easily fooled by typographical attacks
-+ Grid discretization is _very_ important when images are similar
-+ For this dataset 0.150 of all pairwise combinations fail on the grid [0, 5, 10, 15, 20, 25] from [0, 30] range
-
-Raw win table of "wins" reflect previous results found in Yee et. all: gender plays a strong role (towards females), while the role of ethnicity matters, but in a more subtle way. (p-values are constructed from a two-sided binomial test using the sample mean as the expected value, significance is p<0.01 provided for convenience only).
+We first report results reflected in Yee et. all: gender plays a strong role (towards females), while the role of ethnicity matters, but in a more subtle way. p-values are constructed from a two-sided binomial test using the sample mean as the expected value, significance (when shown), is set at p<0.01 and provided for visual convenience.
 
 ```
             key        n       k       pct         pvalue
@@ -53,8 +64,7 @@ Reflecting the gender and ethnicity parity in the party structure we see the sam
 0     democrat  1452480  788941  0.543168     0.0
 ```
 
-
-Considering the interaction table, the largest difference is between white males and females. For non-white males the bias still exists, but is less. N reflects not only each pairwise interaction but at all levels of offset.
+Considering the interaction between gender and ethnicity, the largest difference is between white males and females. For non-white males the bias still exists, but is less. n reflects not only each pairwise comparisons but at all levels of offset.
 
 ```
         left_key     right_key       n       k       pct         pvalue    sig
@@ -76,7 +86,7 @@ Considering the interaction table, the largest difference is between white males
 3   other_female    white_male   76845   56482  0.735012   0.000000e+00   True
 ```
 
-Considering the side, the baseline is 0.15. This means that 15% of the image pairs are exploitable. The breakdown along demographics show that there is a difference with non-white females and white female from this expected 15%. N reflects only the pairwise 
+Next we consider the effects of apply the exploit. The raw breakdown along demographics show that there is a difference with non-white females and white female from this expected 15%. Here, n reflects only the pairwise comparisons:
 
 ```
            key       n      k       pct        pvalue    sig
@@ -85,6 +95,8 @@ Considering the side, the baseline is 0.15. This means that 15% of the image pai
 3    white_male  349236  52319  0.149810  9.056615e-01  False
 0  other_female   50196   8131  0.161985  5.644320e-14   True
 ```
+
+Finally, we show the main results using both subgroups of ethnicity and gender.
 
 ```
         left_key     right_key       n      k       pct        pvalue    sig
@@ -106,4 +118,9 @@ Considering the side, the baseline is 0.15. This means that 15% of the image pai
 8   white_female  other_female    4418    840  0.190131  3.868877e-13   True
 ```
 
-Need to collapse this table...
+Useful links for the submission:
+
++ [Challenge blog post](https://blog.twitter.com/engineering/en_us/topics/insights/2021/algorithmic-bias-bounty-challenge)
++ [Hacker One entry point](https://hackerone.com/twitter-algorithmic-bias?type=team)
++ [Crop code on github](https://github.com/twitter-research/image-crop-analysis)
++ [arXiv paper](https://arxiv.org/abs/2105.08667)

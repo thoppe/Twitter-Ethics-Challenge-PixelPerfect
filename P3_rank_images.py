@@ -15,7 +15,8 @@ aspect_ratio = 1.0  # 3 / 2.0
 
 # 38.6415 pixels across
 # offset_amounts = [0, 10, 5, 7, 10, 12]
-offset_amounts = [0, 6, 13, 19, 26]
+offset_amounts = [0, 6, 13, 19, 26, 31]
+offset_amounts = [31]
 
 bin_path = "twitter_src/candidate_crops"
 model_path = "twitter_src/fastgaze.vxm"
@@ -44,8 +45,9 @@ def evaluate(img0, img1, offset_amount):
         img.save(FOUT.name)
         output = model.get_output(Path(FOUT.name))
 
-    # df = pd.DataFrame(output["all_salient_points"])
-    # print(df)
+    #import pandas as pd
+    #df = pd.DataFrame(output["all_salient_points"])
+    #print(df)
 
     # If this is past the mid_width the right image "wins"
     mid_width = img.size[0] // 2
@@ -108,7 +110,7 @@ def compute(pair):
 images = list(map(str, Path("data/raw_photos/").glob("*")))
 
 # Take a subset if we don't want to wait
-images = images[:]
+images = images[::-1]
 
 
 for f0 in tqdm(images):
