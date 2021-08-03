@@ -43,24 +43,24 @@ Full tables of statistics are provided at the end of the README. Self-pairs were
 
 ## Self-score
 
-+ **Type of Harm**
++ **Type of Harm** (20)
 
 Unintentional underrepresentation (20 base points).
 
-+ **Damage or impact**
++ **Damage or impact** (1.4, 1.2 = 1.3)
 
 We show that along multiple axis of identity (gender and ethnicity) this effect of this exploit and is magnified for women of color (x1.4). Being cropped out of an image, or having high varability of being cropped out of an image (inconsitant user experience and subtle UI gaslighting) ca have a moderate impact to a person's well-being (x1.2)
 
-+ **Affected users**
++ **Affected users** (1.2)
 
 We estimate that the number of users that have been seen or exposed to images of multiple people, where one of them is a woman of color is at least one million (x1.2). With 187 million active user each posting or reposting a single target image once a year with 10 views, this is still gives 5 million affected users per day. 
 
-+ **Likelihood only graded for unintentional harms**
++ **Likelihood only graded for unintentional harms** (1.3)
 + **Exploitability only graded for intentional harms:**
 
 While this is not an intentional harm, it can be! Code provided can easily duplicate this effect (x1.3 if intentional). The author notes that this algorithm isn't exactly the same as the one live on Twitter now (8/2/21) as it currently chooses to do nothing, and instead pick the black square in the middle ([Roll Safe meme](https://knowyourmeme.com/memes/roll-safe): can't have bias if we remove the humans).
 
-We note that it is hard to tell harm has occurred in-the-wild, as the effects are often unnoticed by the completely arbitrary number of evaluation points the cropping algorithm used. That said, we show that it works on real world images as well:
+We note that it is hard to tell harm has occurred in-the-wild, as the effects are often unnoticed by the completely arbitrary number of evaluation points the cropping algorithm used. That said, we show that it works on real world images as well in the example below. Considering that images with multiple people are shown on Twitter daily, this exploit is very likely (1.3)
 
 ![](docs/kids_23.jpg)
 ![](docs/kids_24.jpg)
@@ -71,12 +71,17 @@ Here the most salient point is marked by a green dot. The images are only offset
 ![](docs/people_12.jpg)
 ![](docs/people_14.jpg)
 
-+ **Justification:**
-+ **Clarity of contribution:**
++ **Justification:** (1.0)
 
-Final score: (TBD)
+We hope that the reader can see that the current algorithm is brittle and easily exploited. This effect happens naturally with different images and is dependent on unimportant information at the edge of the image. The harm here is subtle, but it is important to note that it isn't uniform across all demographics. If some users are arbitrarily and inconsistently cropped, this creates an experience that their presence in a photo is also arbitrary. We score this section at (x1.00) as the methodology is sound but could use a larger dataset and the effect isn't as harmful as a racially biased crop that was shown in the first paper. That said, we note that the original publication had no time constraints, but this challenge was announced and closed in less than two weeks. 
 
++ **Clarity of contribution:** (1.5)
 
+This submission is fully documented with workable examples, a reproducible dataset, and evidence of harm both intentional and unintentionally (x1.5). We note that the exploit can be fixed in numerous way at the cost of more computational resources. Instead of a single point, multiple points can be evaluated heuristically (as the original authors suggest). Or kernel densities can be estimated to provide a smoother representation of the most salient _area_.
+
+Final Score:
+
+`20 x (1.3 + 1.2 + 1.3 + 1.0 + 1.5) = 60.84`
 
 ## Appendix and data tables
 
