@@ -9,12 +9,12 @@ We build off the work presented by [Yee et al.](https://arxiv.org/abs/2105.08667
 
 The following images are almost identical, with one small exception. The second images has a 13 pixel padding on the left:
 
-!()[docs/offset_0.jpg]
-!()[docs/offset_13.jpg]
+![](docs/offset_0.jpg)
+![](docs/offset_13.jpg)
 
 This is enough to change which image is cropped. To replicate this, you can use the code provided or the [jupyter notebook](https://github.com/twitter-research/image-crop-analysis/blob/main/notebooks/Image%20Annotation%20Dash.ipynb).
 
-!()[docs/twitter_notebook_example.png]
+![](docs/twitter_notebook_example.png)
 
 ## Methods
 
