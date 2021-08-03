@@ -1,20 +1,23 @@
 # Twitter Ethics Challenge: Pixel Perfect
 Submission to Twitter's algorithmic bias bounty challenge, by Travis Hoppe ([@metasemantic](https://twitter.com/metasemantic?lang=en)).
 
+![](docs/twitter_notebook_example.png)
+
 ## Abstract
 
 We build off the work presented by [Yee et al.](https://arxiv.org/abs/2105.08667) and show that a trivial image modification can dramatically change the saliency ranking of two images. This modification can result in different crops for the same images. Specifically, we find that adding padding to the left of an image can alter the selection of which image to crop. At least 15% of all image pairs are exploitable in this way, possibly much larger.
 
 ## Example
 
-The following images are almost identical, with one small exception. The second images has a 13 pixel padding on the left:
+The following images are almost identical, with one small exception. The second image has a 13 pixel padding on the left. This is enough to change which image is cropped!
 
+** Rashida Tlaib is cropped **
 ![](docs/offset_0.jpg)
+
+** Kyrsten Sinema is cropped **
 ![](docs/offset_13.jpg)
 
-This is enough to change which image is cropped. To replicate this, you can use the code provided or the [jupyter notebook](https://github.com/twitter-research/image-crop-analysis/blob/main/notebooks/Image%20Annotation%20Dash.ipynb).
-
-![](docs/twitter_notebook_example.png)
+To replicate this, you can use the code provided or the [jupyter notebook](https://github.com/twitter-research/image-crop-analysis/blob/main/notebooks/Image%20Annotation%20Dash.ipynb).
 
 ## Methods
 
