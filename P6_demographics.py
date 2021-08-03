@@ -17,7 +17,6 @@ info = info.set_index("photo_key")
 demographic_keys = [
     "gender",
     "ethnicity",
-    "party",
 ]
 
 # Adjust ethnicity to a binary for analysis
@@ -51,8 +50,6 @@ for key in demographic_keys:
     g[key] = info[key]
 print(g.groupby(["ethnicity", "gender"])["is_exploit"].mean())
 
-print(g)
-exit()
 g.to_csv("data/exploitability.csv")
 
 ###############################################################################
@@ -77,7 +74,7 @@ stats["pvalue"] = [
 ]
 stats["sig"] = stats.pvalue < 0.01
 
-print(stats.reset_index().sort_values("pct", ascending=True))
+print(stats.reset_index().sort_values("pct", ascending=True).reset_index(drop=True))
 print()
 
 
@@ -104,105 +101,5 @@ stats["pvalue"] = [
     for _, row in stats.iterrows()
 ]
 stats["sig"] = stats.pvalue < 0.01
-print(stats.reset_index().sort_values("pct", ascending=True))
+print(stats.reset_index().sort_values("pct", ascending=True).reset_index(drop=True))
 print()
-
-
-###############################################################################################
-
-exit()
-
-
-# Map a few of the demographic keys to binary
-
-# df['female'] = info['gender'] == 'female'
-# df['white'] = info['ethnicity'] == 'white-american'
-# df['AA'] = info['ethnicity'] == 'african-american'
-
-# df['white'] = df['ethnicity'] == 'white-american'
-# info['white'] = info['ethnicity'] == 'white-american'
-
-info["AA"] = info["ethnicity"] == "african-american"
-info["ethnicity"] = info["ethnicity"].apply(
-    lambda x: "white" if x == "white-american" else "other"
-)
-
-demographic_keys = [
-    "gender",
-    "ethnicity",
-    #'white',
-    #'ethnicity',
-    #'religion',
-    #'openly_lgbtq',
-]
-
-for outer_key in ["left", "right"]:
-    df = df.set_index(outer_key)
-
-    for demo_key in demographic_keys:
-        key = f"{demo_key}_{outer_key}"
-        df[key] = info[demo_key]
-
-    df = df.reset_index()
-
-cols = ["gender_left", "gender_right"]
-g = df.groupby(cols)
-print(df.is_exploit.mean())
-print(g.size())
-print(g["is_exploit"].mean().reset_index())
-
-cols = ["gender_left", "ethnicity_left", "gender_right", "ethnicity_right"]
-g = df.groupby(cols)
-print(df.is_exploit.mean())
-print(g.size())
-dx = g["is_exploit"].mean().reset_index()
-print(dx)
-
-
-exit()
-
-g = df.groupby(cols)
-print(g["is_exploit"].mean())
-
-
-cols = ["F_right", "AA_right"]
-g = df.groupby(cols)
-print(g["is_exploit"].mean())
-
-
-exit()
-
-
-# print(df[(df.F_left==1) & (df.F_right==1) & (df.AA_left==1) & (df.AA_right==1)])
-
-# del df['ordered_key']
-del df["offset_mismatch"]
-
-cols = ["F_left", "AA_left", "F_right", "AA_right"]
-g = df.groupby(cols)
-print(g["is_exploit"].mean())
-print(g["is_exploit"].size())
-
-expected_value = df["is_exploit"].mean()
-
-###########################################################################
-
-key = "is_exploit"
-
-stats = pd.DataFrame()
-stats["n"] = g[key].size()
-stats["k"] = g[key].sum()
-
-pv = []
-
-
-for idx, row in stats.iterrows():
-    p = binomtest(row["k"], row["n"], p=expected_value).pvalue
-    pv.append(p)
-
-stats["p"] = pv
-stats[key] = g[key].mean()
-print(stats)
-print("*********************************************************************")
-stats = stats[stats.p < 0.05]
-print(stats)

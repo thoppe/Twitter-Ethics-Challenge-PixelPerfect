@@ -63,11 +63,11 @@ for outer_key in ["left", "right", "winner"]:
 
     df = df.reset_index()
 
-# df['left_key'] = df.ethnicity_left + '_' + df.gender_left
-# df['right_key'] = df.ethnicity_right + '_' + df.gender_right
+df["left_key"] = df.ethnicity_left + "_" + df.gender_left
+df["right_key"] = df.ethnicity_right + "_" + df.gender_right
 
-df["left_key"] = df.party_left
-df["right_key"] = df.party_right
+# df["left_key"] = df.party_left
+# df["right_key"] = df.party_right
 
 df["left_winner"] = df["side"] == 0
 df["right_winner"] = df["side"] == 1
@@ -94,7 +94,7 @@ stats["pvalue"] = [
     for _, row in stats.iterrows()
 ]
 
-print(stats.reset_index().sort_values("pct", ascending=True))
+print(stats.reset_index().sort_values("pct", ascending=True).reset_index(drop=True))
 print()
 
 #################################################################################
@@ -120,5 +120,5 @@ stats["pvalue"] = [
     for _, row in stats.iterrows()
 ]
 stats["sig"] = stats.pvalue < 0.01
-print(stats.reset_index().sort_values("pct", ascending=True))
+print(stats.reset_index().sort_values("pct", ascending=True).reset_index(drop=True))
 print()

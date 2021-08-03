@@ -9,14 +9,10 @@ import tempfile
 import json
 from wasabi import msg
 
-aspect_ratio = 1.0  # 3 / 2.0
-# offset_amounts = range(0, 30, 5)
-# offset_amounts = [0, 5, 10, 15, 20, 25]
+aspect_ratio = 1.0 
 
 # 38.6415 pixels across
-# offset_amounts = [0, 10, 5, 7, 10, 12]
 offset_amounts = [0, 6, 13, 19, 26, 31]
-offset_amounts = [31]
 
 bin_path = "twitter_src/candidate_crops"
 model_path = "twitter_src/fastgaze.vxm"
@@ -45,9 +41,9 @@ def evaluate(img0, img1, offset_amount):
         img.save(FOUT.name)
         output = model.get_output(Path(FOUT.name))
 
-    #import pandas as pd
-    #df = pd.DataFrame(output["all_salient_points"])
-    #print(df)
+    # import pandas as pd
+    # df = pd.DataFrame(output["all_salient_points"])
+    # print(df)
 
     # If this is past the mid_width the right image "wins"
     mid_width = img.size[0] // 2
