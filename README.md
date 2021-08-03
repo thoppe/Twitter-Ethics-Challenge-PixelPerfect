@@ -5,16 +5,16 @@ Submission to Twitter's algorithmic bias bounty challenge, by Travis Hoppe ([@me
 
 ## Abstract
 
-We build off the work presented by [Yee et al.](https://arxiv.org/abs/2105.08667) and show that a trivial image modification can dramatically change the saliency ranking of two images. This modification can result in different crops for the same images. Specifically, we find that adding padding to the left of an image can alter the selection of which image to crop. At least 15% of all image pairs are exploitable in this way, possibly much larger.
+We build off the work presented by [Yee et al.](https://arxiv.org/abs/2105.08667) and show that a trivial image modification can dramatically change the saliency ranking of two images. This modification can result in different crops for the same images. Specifically, we find that adding padding to the left of an image can alter the selection of which image to crop. At least 15% of all image pairs are exploitable in this way, possibly much larger. The exploit, which can be easily triggered intentionally, happens naturally and is 25% more likely to occur when comparing white women to women of color or other ethnicities.
 
 ## Example
 
 The following images are almost identical, with one small exception. The second image has a 13 pixel padding on the left. This is enough to change which image is cropped!
 
-** Rashida Tlaib is cropped **
+**Rashida Tlaib is cropped**
 ![](docs/offset_0.jpg)
 
-** Kyrsten Sinema is cropped **
+**Kyrsten Sinema is cropped**
 ![](docs/offset_13.jpg)
 
 To replicate this, you can use the code provided or the [jupyter notebook](https://github.com/twitter-research/image-crop-analysis/blob/main/notebooks/Image%20Annotation%20Dash.ipynb).
@@ -33,22 +33,44 @@ The cropping algorithm computes a set of saliency points across 140 evenly space
 
 Annidcotorally, we found a much larger effect when we applied the attack to buffers of _all_ sizes, but computational constraints prevented this full analysis. We also could increase the attack surface by inserting the buffer between the images but this modified one image independently of the other.  Since the buffer shifted both images by the same amount, it is considered "fair" for attacks of all images in the wild.
 
-For demographics, we split the population into the two categories of gender provided (all members identified as either male or female), and two categories of ethnicity, white and other. "Other", or not-white, was chosen as a category for statistical power, as the various subgroups (African American, Hispanics, pacific islanders, ...), were not large enough to draw meaningful conclusions. Future work should examine this bias using more nuanced subgroups with larger datasets.
+For demographics, we split the population into the two categories of gender provided (all members identified as either male or female), and two categories of ethnicity: white and other. "Other", or not-white, was chosen as a category for statistical power as the various subgroups (African American, Hispanics, pacific islanders, ...), were not large enough to draw meaningful conclusions. Future work should examine this bias using more nuanced subgroups with larger datasets.
 
 ## Results
 
-We found that out of the (536^2) image pairs considered, **15% of them were exploitable by our method**. Furthermore, we found that the attack was **disproportionately more likely to occur when comparing non-white women to white women**. We found **an increase of about 25%** (19% up from 15%) when considering this subgroup (p<<0.001).
+We found that out of the (536^2) image pairs considered, **15% of them were exploitable by our method**. Furthermore, we found that the attack was **disproportionately more likely to occur when comparing non-white women to white women**. We found **an increase of about 25%** from the baseline (19% up from 15%) when considering this subgroup (p<<0.001).
 
-Full tables of statistics are provided at the end of the README. Self-pairs were not considered, so the actual number of considerations was 536^2 - 536. Additionally, we find slight differences considering image A-B vs B-A, so we considered them as separate cases and found that they were nearly identical.
+Full tables of statistics are provided at the end of the README. Self-pairs were not considered, so the actual number of considerations was 536^2 - 536. Additionally, we find slight differences considering image A-B vs B-A, so we considered them as separate cases but they were not statistically significant.
 
 ## Self-score
 
 + **Type of Harm**
 
+Unintentional underrepresentation (20 base points).
+
 + **Damage or impact**
+
+We show that along multiple axis of identity (gender and ethnicity) this effect of this exploit and is magnified for women of color (x1.4). Being cropped out of an image, or having high varability of being cropped out of an image (inconsitant user experience and subtle UI gaslighting) ca have a moderate impact to a person's well-being (x1.2)
+
 + **Affected users**
+
+We estimate that the number of users that have been seen or exposed to images of multiple people, where one of them is a woman of color is at least one million (x1.2). With 187 million active user each posting or reposting a single target image once a year with 10 views, this is still gives 5 million affected users per day. 
+
 + **Likelihood only graded for unintentional harms**
 + **Exploitability only graded for intentional harms:**
+
+While this is not an intentional harm, it can be! Code provided can easily duplicate this effect (x1.3 if intentional). The author notes that this algorithm isn't exactly the same as the one live on Twitter now (8/2/21) as it currently chooses to do nothing, and instead pick the black square in the middle ([Roll Safe meme](https://knowyourmeme.com/memes/roll-safe): can't have bias if we remove the humans).
+
+We note that it is hard to tell harm has occurred in-the-wild, as the effects are often unnoticed by the completely arbitrary number of evaluation points the cropping algorithm used. That said, we show that it works on real world images as well:
+
+!()[docs/kids_23.jpg]
+!()[docs/kids_24.jpg]
+
+Here the most salient point is marked by a green dot. The images are only offset by a single width pixel. Here, in the span of three pixels, there are three different cropping points:
+
+!()[docs/people_11.jpg]
+!()[docs/people_12.jpg]
+!()[docs/people_14.jpg]
+
 + **Justification:**
 + **Clarity of contribution:**
 
