@@ -1,13 +1,9 @@
 from twitter_src.crop_api import ImageSaliencyModel
-from twitter_src.image_manipulation import process_image, get_image_saliency_map
 from pathlib import Path
 from tqdm import tqdm
 import hashlib
-import random
-import itertools
-from PIL import Image, ImageDraw
+from PIL import Image
 import numpy as np
-import pandas as pd
 from dspipe import Pipe
 import tempfile
 import json
@@ -15,7 +11,11 @@ from wasabi import msg
 
 aspect_ratio = 1.0  # 3 / 2.0
 # offset_amounts = range(0, 30, 5)
-offset_amounts = [0, 5, 10, 15, 20, 25]
+# offset_amounts = [0, 5, 10, 15, 20, 25]
+
+# 38.6415 pixels across
+# offset_amounts = [0, 10, 5, 7, 10, 12]
+offset_amounts = [0, 6, 13, 19, 26]
 
 bin_path = "twitter_src/candidate_crops"
 model_path = "twitter_src/fastgaze.vxm"
@@ -43,6 +43,9 @@ def evaluate(img0, img1, offset_amount):
     with tempfile.NamedTemporaryFile(suffix=".jpg") as FOUT:
         img.save(FOUT.name)
         output = model.get_output(Path(FOUT.name))
+
+    # df = pd.DataFrame(output["all_salient_points"])
+    # print(df)
 
     # If this is past the mid_width the right image "wins"
     mid_width = img.size[0] // 2
@@ -104,6 +107,7 @@ def compute(pair):
 
 images = list(map(str, Path("data/raw_photos/").glob("*")))
 
+# Take a subset if we don't want to wait
 images = images[:]
 
 

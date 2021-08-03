@@ -1,8 +1,6 @@
 from twitter_src.crop_api import ImageSaliencyModel
-from twitter_src.image_manipulation import process_image, get_image_saliency_map
 from pathlib import Path
 from PIL import Image, ImageDraw
-import numpy as np
 from dspipe import Pipe
 import pandas as pd
 
@@ -40,6 +38,9 @@ def compute(f0, f1):
 
     df = pd.DataFrame(output["all_salient_points"])
 
+    f2 = str(f1).replace(".jpg", ".csv")
+    df.to_csv(f2, index=False)
+
     # draw.rectangle(crop, fill=None, outline='white', width=10)
     # draw.rectangle(crop, fill=None, outline='black', width=2)
 
@@ -47,9 +48,4 @@ def compute(f0, f1):
 
 
 P = Pipe("data/raw_photos/", "data/saliancy_map/", output_suffix=".jpg")
-P(compute, 1)
-
-# compute(
-#    'data/source_img/Adverseral_1_REVOLVE-Swimsuit-Lookbook-2016-01.jpg',
-#    'tmp.jpg',
-# )
+P(compute, -1)

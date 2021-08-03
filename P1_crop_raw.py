@@ -1,8 +1,6 @@
 from twitter_src.crop_api import ImageSaliencyModel
-from twitter_src.image_manipulation import process_image, get_image_saliency_map
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageOps
-import numpy as np
+from PIL import Image, ImageOps
 from dspipe import Pipe
 import tempfile
 
