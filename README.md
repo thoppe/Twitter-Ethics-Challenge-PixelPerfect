@@ -5,6 +5,17 @@ Submission to Twitter's algorithmic bias bounty challenge, by Travis Hoppe ([@me
 
 We build off the work presented by [Yee et al.](https://arxiv.org/abs/2105.08667) and show that a trivial image modification can dramatically change the saliency ranking of two images. This modification can result in different crops for the same images. Specifically, we find that adding padding to the left of an image can alter the selection of which image to crop. At least 15% of all image pairs are exploitable in this way, possibly much larger.
 
+## Example
+
+The following images are almost identical, with one small exception. The second images has a 13 pixel padding on the left:
+
+!()[docs/offset_0.jpg]
+!()[docs/offset_13.jpg]
+
+This is enough to change which image is cropped. To replicate this, you can use the code provided or the [jupyter notebook](https://github.com/twitter-research/image-crop-analysis/blob/main/notebooks/Image%20Annotation%20Dash.ipynb).
+
+!()[docs/twitter_notebook_example.png]
+
 ## Methods
 
 To ensure a dataset that is 1] representative of gender and ethnicity, 2] publicly available, 3] uniform in framing and pose, and 4] consensual, we use images from the 117th US Congress. Images and demographic data provided by Civil Service USA and can be found at the following locations:
