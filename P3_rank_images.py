@@ -13,8 +13,9 @@ import tempfile
 import json
 from wasabi import msg
 
-aspect_ratio = 3 / 2.0
-offset_amounts = range(0, 30, 5)
+aspect_ratio = 1.0  # 3 / 2.0
+# offset_amounts = range(0, 30, 5)
+offset_amounts = [0, 5, 10, 15, 20, 25]
 
 bin_path = "twitter_src/candidate_crops"
 model_path = "twitter_src/fastgaze.vxm"
@@ -24,6 +25,9 @@ model = ImageSaliencyModel(
     aspectRatios=[aspect_ratio],
 )
 
+save_dest = Path("data/pairwise_cmp")
+save_dest.mkdir(parents=True, exist_ok=True)
+
 
 def evaluate(img0, img1, offset_amount):
     assert img0.size == img1.size
@@ -32,7 +36,7 @@ def evaluate(img0, img1, offset_amount):
         shape=(spacer_img.shape[0], offset_amount, 3), dtype=spacer_img.dtype
     )
 
-    img = np.hstack([spacer_img, np.asarray(img0), offset_img, np.asarray(img1)])
+    img = np.hstack([offset_img, np.asarray(img0), spacer_img, np.asarray(img1)])
 
     img = Image.fromarray(img)
 
@@ -95,28 +99,39 @@ def compute(pair):
     with open(f_save, "w") as FOUT:
         FOUT.write(js)
 
-    msg.good(f_save)
+    # msg.good(f_save)
 
 
-images = list(map(str, Path("data/crop_img/").glob("*")))
-
-# Random choice for testing
-# total_iterations = 1_000_000
-# pairs = [random.choices(images, k=2) for _ in range(total_iterations)]
+images = list(map(str, Path("data/raw_photos/").glob("*")))
 
 images = images[:]
 
-# Full pairwise combinations
-pairs = []
+
 for f0 in tqdm(images):
+
+    msg.info(f"Starting {f0}")
+    pairs = []
+
     for f1 in images:
         for n in offset_amounts:
             pairs.append([f0, f1, n])
 
+    Pipe(pairs, shuffle=True)(compute, 8)
 
-# Shuffle to get some early results
-P = Pipe(pairs, shuffle=True)
-P(compute, 8)
+"""
+# Full pairwise combinations, both left AND right
+# Grab one more each time so we can view early results
+for k in range(50, len(full_images)):
+    msg.info(f"Starting k={k}")
+    
+    images = full_images[:k]    
+    pairs = []
+    for f0 in tqdm(images):
+        for f1 in images:
+            for n in offset_amounts:
+               pairs.append([f0, f1, n])
 
-# P = Pipe(pairs, shuffle=True, limit=5)
-# P(compute, 1)
+    # Shuffle to get some early results
+    P = Pipe(pairs, shuffle=False)
+    P(compute, 8)
+"""

@@ -23,11 +23,11 @@ invalid = len(x) - ((x == 0) | (x == 1)).sum()
 print(f"Fraction invalid {invalid/len(x):0.3f}")
 
 g = df.groupby(["f0", "f1"])
-#gx = g["side"].mean().apply(lambda x: (1 - np.abs(2 * x - 1))).reset_index()
+# gx = g["side"].mean().apply(lambda x: (1 - np.abs(2 * x - 1))).reset_index()
 gx = g["side"].mean().apply(lambda x: (1 - np.abs(2 * x - 1)) > 0).reset_index()
 
 
-gx = gx.rename(columns={"side":"offset_mismatch"})
+gx = gx.rename(columns={"side": "offset_mismatch"})
 gx.to_csv("data/offset_ranking_pairwise.csv", index=False)
 print(gx)
 exit()

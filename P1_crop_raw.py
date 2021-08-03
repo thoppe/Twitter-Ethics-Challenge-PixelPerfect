@@ -6,7 +6,7 @@ import numpy as np
 from dspipe import Pipe
 import tempfile
 
-aspect_ratio = 3 / 2.0
+aspect_ratio = 1.0  # 4 / 2.0
 
 bin_path = "twitter_src/candidate_crops"
 model_path = "twitter_src/fastgaze.vxm"
@@ -25,7 +25,7 @@ def compute(f0, f1):
     img = Image.open(f_img)
     w, h = img.size
 
-    target_height = 600
+    target_height = 400
 
     nw = int(w * target_height / h)
     img = img.resize((nw, target_height))
@@ -56,6 +56,6 @@ def compute(f0, f1):
 
 
 P = Pipe(
-    "data/raw_img/", "data/crop_img", output_suffix=".jpg", shuffle=True, limit=None
+    "data/raw_photos/", "data/crop_img", output_suffix=".jpg", shuffle=True, limit=None
 )
 P(compute, -1)

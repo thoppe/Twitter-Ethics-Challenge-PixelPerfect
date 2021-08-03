@@ -5,13 +5,13 @@ Submission to Twitter's algorithmic bias bounty challenge
 
 ## Self-score
 
-**Type of Harm**
-**Damage or impact**
-**Affected users**
-**Likelihood only graded for unintentional harms**
-**Exploitability only graded for intentional harms:**
-**Justification:**
-**Clarity of contribution:**
++ **Type of Harm**
++ **Damage or impact**
++ **Affected users**
++ **Likelihood only graded for unintentional harms**
++ **Exploitability only graded for intentional harms:**
++ **Justification:**
++ **Clarity of contribution:**
 
 Final score: (TBD)
 
