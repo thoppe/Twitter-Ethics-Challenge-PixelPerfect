@@ -62,14 +62,14 @@ While this is not an intentional harm, it can be! Code provided can easily dupli
 
 We note that it is hard to tell harm has occurred in-the-wild, as the effects are often unnoticed by the completely arbitrary number of evaluation points the cropping algorithm used. That said, we show that it works on real world images as well:
 
-!()[docs/kids_23.jpg]
-!()[docs/kids_24.jpg]
+![](docs/kids_23.jpg)
+![](docs/kids_24.jpg)
 
 Here the most salient point is marked by a green dot. The images are only offset by a single width pixel. Here, in the span of three pixels, there are three different cropping points:
 
-!()[docs/people_11.jpg]
-!()[docs/people_12.jpg]
-!()[docs/people_14.jpg]
+![](docs/people_11.jpg)
+![](docs/people_12.jpg)
+![](docs/people_14.jpg)
 
 + **Justification:**
 + **Clarity of contribution:**
