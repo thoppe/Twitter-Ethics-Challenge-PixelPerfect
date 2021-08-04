@@ -5,7 +5,7 @@ Submission to Twitter's algorithmic bias bounty challenge, by Travis Hoppe ([@me
 
 ## Abstract
 
-We build off the work presented by [Yee et al.](https://arxiv.org/abs/2105.08667) and show that a trivial image modification can dramatically change the saliency ranking of two images. This modification can result in different crops for the same images. Specifically, we find that adding padding to the left of an image can alter the selection of which image to crop. At least 16% of all image pairs are exploitable in this way, possibly much larger. The exploit, which can be easily triggered intentionally, happens naturally and is 22% more likely to occur when comparing white women to women of color or other ethnicities.
+We build off the work presented by [Yee et al.](https://arxiv.org/abs/2105.08667) and show that a trivial image modification can dramatically change the saliency point of two images. This modification can result in different crops for the same images. Specifically, we find that adding padding to the left of an image can alter the selection point where the Twitter algorithm will crop. At least 16% of all image pairs are exploitable in this way (possibly much larger). The exploit, which can be easily triggered intentionally, happens naturally and is 22% more likely to occur when comparing white women to women of color.
 
 ## Example
 
@@ -21,25 +21,25 @@ To replicate this, you can use the code provided or the [jupyter notebook](https
 
 ## Methods
 
-To ensure a dataset that is 1] representative of gender and ethnicity, 2] publicly available, 3] uniform in framing and pose, and 4] consensual, we use images from the 117th US Congress. Images and demographic data provided by Civil Service USA and can be found at the following locations:
+To ensure a dataset that is 1] representative of gender and ethnicity, 2] publicly available, 3] uniform in framing and pose, and 4] consensual, we use images from the [117th US Congress](https://www.congress.gov/members?q=%7B%22congress%22%3A%5B%22117%22%5D%7D&pageSize=250&page=1). Images and demographic data provided by Civil Service USA and can be found at the following locations:
 
 + https://github.com/CivilServiceUSA/us-house
 + https://github.com/CivilServiceUSA/us-senate
-+ Additional information for the [117th US Congress](https://www.congress.gov/members?q=%7B%22congress%22%3A%5B%22117%22%5D%7D&pageSize=250&page=1)
++ Additional information for the 
 
 Each congressional representative and senator was put in competition with each other. Similar to the [Twitter paper](https://arxiv.org/abs/2105.08667), we placed a black buffer between the images and asked the cropping algorithm for the most salient point using the aspect ratio of the original images (1:1).
 
-The cropping algorithm computes a set of saliency points across 140 evenly spaced points along the composite image (1536x512). In this case it works out to about 40 pixels per point. We evaluate the "winner" for the original composite image, then examine if the winner changes when we add a buffer of fixed size to the left of the image. We used buffers of size `[0, 6, 13, 19, 26, 31]`. A pair of images is considered "exploitable" if there exists a buffer of some size where we can change which image is cropped.
+The cropping algorithm computes a set of saliency rankings across 140 evenly spaced points along the composite image (1536x512). For this experiment, this is about 40 pixels per point. We evaluate the "winner" for the original composite image, then examine if the winner changes when we add a buffer of fixed size to the left of the image. We used buffers of size `[0, 6, 13, 19, 26, 31]`. A pair of images is considered "exploitable" if there exists a buffer of some size that selects a different photo from the non-buffered image.
 
-Anecdotally, we found a much larger effect when we applied the attack to buffers of _all_ sizes, but computational constraints prevented this full analysis. We also could increase the attack surface by inserting the buffer between the images (but this modified one image independently of the other).  Since the buffer shifted both images by the same amount, it is considered "fair" for attacks of all images in the wild.
+Anecdotally, we found a much larger effect when we applied the attack to buffers of of more sizes than those listed, but computational constraints prevented this full analysis. We also could increase the attack surface by inserting the buffer between the images (but this modified one image independently of the other).  Since the buffer shifted both images by the same amount, it is considered "fair" for attacks of all images in the wild as it's trival to add extra space to any image (see examples in the self-scoring section for more).
 
-For demographics, we split the population into the two categories of gender provided (all members identified as either male or female), and two categories of ethnicity: white and other. "Other", or not-white, was chosen as a category for statistical power as the various subgroups (African American, Hispanics, pacific islanders, ...), were not large enough to draw meaningful conclusions. Future work should examine this bias using more nuanced subgroups with larger datasets.
+For demographics, we split the population into the two categories of gender provided (all members identified as either male or female), and two categories of ethnicity: white and other. "Other", refered to here as people of color, was chosen as a category for statistical power as the various subgroups (African American, Hispanics, pacific islanders, ...), were not large enough to draw meaningful conclusions. Future work should examine this bias using more nuanced subgroups with larger datasets.
 
 ## Results
 
-We found that out of the (536^2) image pairs considered, **16.4% of them were exploitable by our method**. Furthermore, we found that the attack was **disproportionately more likely to occur when comparing non-white women to white women**. We found **an increase of about 22.2%** from the baseline (20.04% up from 16.4%) when considering this subgroup (p<<0.001).
+We found that out of the image pairs considered, **16.4% of them were exploitable by our method**. Furthermore, we found that the attack was **disproportionately more likely to occur when comparing white women to women of color**. We found **an increase of about 22.2%** from the baseline (20.04% up from 16.4%) when considering this subgroup (p<<0.001).
 
-Full tables of statistics are provided at the end of the README. Self-pairs were not considered, so the actual number of considerations was 536^2 - 536. Additionally, we find slight differences considering image A-B vs B-A, so we considered them as separate cases but they were not statistically significant.
+Full tables of statistics are provided at the end of the README. Self-pairs were not considered, so the actual number of image pairs was (536^2 - 536), and each of those were evaluated at the 6 offsets. Additionally, we find slight differences considering image A-B vs B-A, so we list them as separate cases in the data tables (but did not find them statistically significant).
 
 ## Self-score
 
@@ -49,18 +49,18 @@ Unintentional underrepresentation.
 
 + **Damage or impact** ((1.4 + 1.2)/2 = 1.3)
 
-We show that along multiple axis of identity (gender and ethnicity) this exploit and not that it is magnified for women of color (x1.4). Being cropped out of an image, or having high variability of being cropped out of an image (UI gaslighting) can have a moderate impact to a person's well-being (x1.2)
+We show that along multiple axis of identity (gender and ethnicity) that it is magnified for women of color (x1.4). Being cropped out of an image, or having high variability of being cropped out of an image (UI gaslighting) can have a moderate impact to a person's well-being (x1.2)
 
 + **Affected users** (1.2)
 
-We estimate that the number of users that have been seen or exposed to images of multiple people, where one of them is a woman of color is at least one million (x1.2). With 187 million active user each posting or reposting a single target image once a year with 10 views, this is still gives 5 million views per user per day.
+We estimate that the number of users that have been seen or exposed to images of multiple people, where one of them is a woman of color is at least one million (x1.2). With 187 million active user each posting or reposting a single target image once a year with 10 views, this under-estimate still gives 5 million views per user per day.
 
 + **Likelihood only graded for unintentional harms** (1.3)
 + **Exploitability only graded for intentional harms:** (not scored)
 
-While this is not an intentional harm, it can be! Code provided can easily duplicate this effect (x1.3 if scored). The author notes that this algorithm isn't exactly the same as the one live on Twitter now (8/2/21) as it currently chooses to do nothing, and instead pick the black square in the middle ([Roll Safe meme](https://knowyourmeme.com/memes/roll-safe): can't have bias if we remove the humans).
+While this is not an intentional harm, it can be! Code provided can easily duplicate this effect (x1.3 if scored) or it can be done with minimal photo editing. Strangley this algorithm isn't exactly the same as the one live on Twitter now (8/2/21). The live algorithm is worse! It currently chooses to do nothing and instead picks a black square in the middle ([Roll Safe meme](https://knowyourmeme.com/memes/roll-safe): can't have bias if we remove the humans).
 
-We note that it is difficult to tell harm has occurred in-the-wild, as the effect may be unnoticed as the user isn't presented with the alternative. That said, we show that it works on real world images as well in the examples below. Considering that images with multiple people are shown on Twitter daily, this exploit is very likely (1.3).
+We note that it is difficult to tell harm has occurred in the wild, as the effect may be unnoticed since the user isn't presented with alternatives. That said, we show that it works on real world images as well in the examples below. Considering that images with multiple people are shown on Twitter daily, this exploit is very likely (1.3).
 
 Here the most salient point is marked by a green dot. The images are only offset by a single width pixel. 
 
@@ -75,7 +75,7 @@ This this example, over the span of three pixels there are three different cropp
 
 + **Justification:** (1.0)
 
-We hope that the reader can see that the current cropping algorithm is brittle and easily exploited. This effect happens naturally with different images and is dependent on unimportant information at the edge of the image. The harm here is subtle, but it is important to note that it isn't uniform across all demographics. If some users are arbitrarily and inconsistently cropped, this creates an experience that their presence (and self!) in a photo is also arbitrary. We score this section at (x1.00) as the methodology is sound but could use a larger dataset and the effect isn't as harmful as a racially biased crop that was shown in the first paper. 
+We hope that the reader can see that the current cropping algorithm is brittle and easily exploited. This effect happens naturally with different images and is dependent on unimportant information at the edge of the image. The harm here is subtle, but it is important to note that it isn't uniform across all demographics. If some users are arbitrarily and inconsistently cropped, this creates an experience that their presence (and self!) in a photo is also arbitrary. We score this section at (x1.00) as the methodology is sound but could use a larger dataset, more cropping points, and the effect isn't as harmful as a racially biased crop that was shown in the first paper. 
 
 + **Clarity of contribution:** (1.5)
 
@@ -129,7 +129,7 @@ Considering the interaction between gender and ethnicity, the largest difference
 15  other_female    white_male   92214   67669  0.733826   0.000000e+00   True
 ```
 
-Next we consider the effects of apply the exploit. The raw breakdown along demographics show that there is a difference with non-white females and white female from this expected 15%. Here, n reflects only the pairwise comparisons:
+Next we consider the effects of the exploit. The raw breakdown along demographics show that there is a difference with non-white females and white female from this expected 16.4%. Here, n reflects only the pairwise comparisons:
 
 ```
             key       n      k       pct        pvalue    sig
